@@ -50,6 +50,7 @@ AVX-512 (VPOPCNTDQ)       |       2249.14 |       1060.73 |    13.05x
 LIBPOPCNT                 |       2353.94 |        992.73 |    12.47x
 ```
 
+
 ```bash
 icx -O3 -march=native popcount_bench.c -o popcount_bench -lm && ./popcount_bench 16384 30 10000
 Generating data...
@@ -75,3 +76,61 @@ This is an AVX512 platform with hardware level VPOPCNTDQ.
 
 Benchmarks for GCC, CLANG, ICX
 
+```bash
+gcc -O3 -march=native popcount_bench.c -o popcount_bench -lm && ./popcount_bench 16384 30 10000
+Generating data...
+Verifying correctness of vectorized methods...
+Verification passed. All methods yield the same result.
+
+Running benchmarks...
+
+Method                    |          0.00 |          0.00 |     0.00x
+--------------------------+---------------+---------------+----------
+Scalar (Guarded)          |       6345.57 |       1577.85 |     1.00x
+Scalar (Compiler -O3)     |       1469.37 |        690.01 |     4.32x
+AVX2                      |       1670.52 |        598.87 |     3.80x
+AVX-512 (No Tern)         |       1160.08 |        527.16 |     5.47x
+AVX-512 (Ternary)         |        847.44 |        512.17 |     7.49x
+AVX-512 (VPOPCNTDQ)       |        777.88 |        517.32 |     8.16x
+LIBPOPCNT                 |        593.82 |        520.90 |    10.69x
+```
+
+
+```bash
+clang -O3 -march=native popcount_bench.c -o popcount_bench -lm && ./popcount_bench 16384 30 10000
+Generating data...
+Verifying correctness of vectorized methods...
+Verification passed. All methods yield the same result.
+
+Running benchmarks...
+
+Method                    |          0.00 |          0.00 |     0.00x
+--------------------------+---------------+---------------+----------
+Scalar (Guarded)          |       6215.90 |       1928.99 |     1.00x
+Scalar (Compiler -O3)     |        940.07 |        530.76 |     6.61x
+AVX2                      |       1764.52 |        922.85 |     3.52x
+AVX-512 (No Tern)         |       1148.62 |        752.82 |     5.41x
+AVX-512 (Ternary)         |        667.90 |        435.47 |     9.31x
+AVX-512 (VPOPCNTDQ)       |        622.69 |        538.95 |     9.98x
+LIBPOPCNT                 |        602.49 |        392.81 |    10.32x
+```
+
+
+```bash
+icx -O3 -march=native popcount_bench.c -o popcount_bench -lm && ./popcount_bench 16384 30 10000
+Generating data...
+Verifying correctness of vectorized methods...
+Verification passed. All methods yield the same result.
+
+Running benchmarks...
+
+Method                    |          0.00 |          0.00 |     0.00x
+--------------------------+---------------+---------------+----------
+Scalar (Guarded)          |       7147.58 |       1735.08 |     1.00x
+Scalar (Compiler -O3)     |        791.11 |        506.33 |     9.03x
+AVX2                      |       1662.49 |        876.45 |     4.30x
+AVX-512 (No Tern)         |       1164.73 |        728.80 |     6.14x
+AVX-512 (Ternary)         |        679.47 |        531.82 |    10.52x
+AVX-512 (VPOPCNTDQ)       |        620.83 |        406.38 |    11.51x
+LIBPOPCNT                 |        665.22 |        578.70 |    10.74x
+```
