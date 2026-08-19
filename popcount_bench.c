@@ -1,4 +1,4 @@
-// build as gcc -O3 -march=native popcount_bench.c -o popcount_bench -lm
+// build as clang -O3 -march=native popcount_bench.c -o popcount_bench -lm
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>

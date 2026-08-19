@@ -1,0 +1,2 @@
+Simple benchmark of various apporahces to compute the popcount using portable intrinsics (library SIMDe) or libpopcnt.
+Compile with clang as: clang -O3 -march=native popcount_bench.c -o popcount_bench -lm
