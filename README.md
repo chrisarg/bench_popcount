@@ -51,7 +51,7 @@ LIBPOPCNT                 |       2353.94 |        992.73 |    12.47x
 ```
 
 ```bash
-icx  -O3 -march=native popcount_bench.c -o popcount_bench -lm && ./popcount_bench 16384 30 10000
+icx -O3 -march=native popcount_bench.c -o popcount_bench -lm && ./popcount_bench 16384 30 10000
 Generating data...
 Verifying correctness of vectorized methods...
 Verification passed. All methods yield the same result.
