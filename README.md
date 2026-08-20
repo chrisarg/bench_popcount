@@ -12,7 +12,7 @@ This is an AVX512 platform, but lacks the VPOPCNTDQ 512 bit popcount instruction
 Benchmarks for GCC, CLANG, ICX
 
 ```bash
-gcc -O3 -march=native popcount_bench.c -o popcount_bench -lm && ./popcount_bench 16384 30 10000
+make -s clean && make CC=gcc >/dev/null 2>&1 && ./popcount_bench 16384 20 10000
 Generating data...
 Verifying correctness of vectorized methods...
 Verification passed. All methods yield the same result.
@@ -21,18 +21,20 @@ Running benchmarks...
 
 Method                    |          0.00 |          0.00 |     0.00x
 --------------------------+---------------+---------------+----------
-Scalar (Guarded)          |       6958.30 |       2654.11 |     1.00x
-Scalar (Compiler -O3)     |       6975.29 |       2425.00 |     1.00x
-AVX2                      |       2240.93 |       1120.05 |     3.11x
-AVX-512 (No Tern)         |       1590.64 |        969.78 |     4.37x
-AVX-512 (Ternary)         |       1313.67 |        912.24 |     5.30x
-AVX-512 (VPOPCNTDQ)       |       2417.79 |       1148.61 |     2.88x
-LIBPOPCNT                 |       2118.59 |       1020.78 |     3.28x
+Scalar (Guarded)          |       8545.68 |       1859.09 |     1.00x
+Scalar (Compiler -O3)     |       8553.24 |       1946.32 |     1.00x
+AVX1 128-bit SIMDE        |       3683.50 |       1214.34 |     2.32x
+AVX2                      |       2122.15 |        789.24 |     4.03x
+AVX-512 (No Tern)         |       1521.02 |        646.60 |     5.62x
+AVX-512 (Ternary)         |       1258.75 |        440.42 |     6.79x
+AVX-512 (VPOPCNTDQ)       |       2263.98 |        778.94 |     3.77x
+NEON SIMDE                |       3566.76 |       1006.52 |     2.40x
+LIBPOPCNT                 |       2019.83 |        887.43 |     4.23x
 ```
 
 
 ```bash
-clang -O3 -march=native popcount_bench.c -o popcount_bench -lm && ./popcount_bench 16384 30 10000
+make -s clean && make CC=clang >/dev/null 2>&1 && ./popcount_bench 16384 20 10000
 Generating data...
 Verifying correctness of vectorized methods...
 Verification passed. All methods yield the same result.
@@ -41,18 +43,20 @@ Running benchmarks...
 
 Method                    |          0.00 |          0.00 |     0.00x
 --------------------------+---------------+---------------+----------
-Scalar (Guarded)          |      29360.14 |       4452.07 |     1.00x
-Scalar (Compiler -O3)     |       3759.48 |       1355.21 |     7.81x
-AVX2                      |       2511.68 |       1182.72 |    11.69x
-AVX-512 (No Tern)         |       1532.55 |        707.58 |    19.16x
-AVX-512 (Ternary)         |       1078.76 |        800.40 |    27.22x
-AVX-512 (VPOPCNTDQ)       |       2249.14 |       1060.73 |    13.05x
-LIBPOPCNT                 |       2353.94 |        992.73 |    12.47x
+Scalar (Guarded)          |      28123.12 |       2248.07 |     1.00x
+Scalar (Compiler -O3)     |       3562.12 |        878.70 |     7.90x
+AVX1 128-bit SIMDE        |       3902.14 |        659.02 |     7.21x
+AVX2                      |       2376.35 |        754.80 |    11.83x
+AVX-512 (No Tern)         |       1461.99 |        463.66 |    19.24x
+AVX-512 (Ternary)         |        994.91 |        330.36 |    28.27x
+AVX-512 (VPOPCNTDQ)       |       2124.63 |        525.78 |    13.24x
+NEON SIMDE                |       4093.10 |        759.29 |     6.87x
+LIBPOPCNT                 |       2235.95 |        566.45 |    12.58x
 ```
 
 
 ```bash
-icx -O3 -march=native popcount_bench.c -o popcount_bench -lm && ./popcount_bench 16384 30 10000
+make -s clean && make CC=icx >/dev/null 2>&1 && ./popcount_bench 16384 20 10000
 Generating data...
 Verifying correctness of vectorized methods...
 Verification passed. All methods yield the same result.
@@ -61,13 +65,15 @@ Running benchmarks...
 
 Method                    |          0.00 |          0.00 |     0.00x
 --------------------------+---------------+---------------+----------
-Scalar (Guarded)          |       9963.76 |       3509.41 |     1.00x
-Scalar (Compiler -O3)     |       2446.11 |       1218.52 |     4.07x
-AVX2                      |       2531.47 |       1082.99 |     3.94x
-AVX-512 (No Tern)         |       1563.76 |       1205.51 |     6.37x
-AVX-512 (Ternary)         |       1079.28 |        702.24 |     9.23x
-AVX-512 (VPOPCNTDQ)       |       2294.69 |       1205.33 |     4.34x
-LIBPOPCNT                 |       2413.61 |       1158.65 |     4.13x
+Scalar (Guarded)          |       9099.37 |       1202.20 |     1.00x
+Scalar (Compiler -O3)     |       3844.24 |        780.35 |     2.37x
+AVX1 128-bit SIMDE        |       3951.64 |        693.88 |     2.30x
+AVX2                      |       2326.32 |        638.84 |     3.91x
+AVX-512 (No Tern)         |       1466.73 |        556.95 |     6.20x
+AVX-512 (Ternary)         |        975.29 |        443.10 |     9.33x
+AVX-512 (VPOPCNTDQ)       |       2111.42 |        458.01 |     4.31x
+NEON SIMDE                |       3865.99 |        722.72 |     2.35x
+LIBPOPCNT                 |       2219.59 |        521.34 |     4.10x
 ```
 
 ## i7-11700
@@ -134,3 +140,17 @@ AVX-512 (Ternary)         |        679.47 |        531.82 |    10.52x
 AVX-512 (VPOPCNTDQ)       |        620.83 |        406.38 |    11.51x
 LIBPOPCNT                 |        665.22 |        578.70 |    10.74x
 ```
+
+
+## i3-12100t
+
+This is an AVX512 platform with hardware level VPOPCNTDQ.
+
+Benchmarks for GCC, CLANG, ICX
+
+
+## rockpro64 (Rockchip RK3399, 2 x A-72 and 2 x A 53)
+
+This is an AVX512 platform with hardware level VPOPCNTDQ.
+
+Benchmarks for GCC, CLANG, ICX
