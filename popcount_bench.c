@@ -20,6 +20,7 @@
 #include "popcount_kernels.h"
 
 char format_string[] = "%-25s | %13.2f | %13.2f | %8.2fx\n";
+char format_string2[] = "%-25s | %13s | %13s | %8s\n";
 
 /* ========================================================================= */
 /*                          DATA GENERATION & STATS                          */
@@ -257,7 +258,7 @@ int main(int argc, char **argv) {
   double scalar_mean = scalar_sum / N;
 
   printf("\n");
-  printf(format_string, "Method", "Mean (ns)", "StdDev (ns)", "Speedup");
+  printf(format_string2, "Method", "Mean (ns)", "StdDev (ns)", "Speedup");
   printf("--------------------------+---------------+---------------+----------"
          "\n");
   print_stats("Scalar (Guarded)", times_scalar_guarded, N, scalar_mean);
