@@ -217,6 +217,54 @@ AVX-512 (VPOPCNTDQ)       |       1043.07 |        340.49 |     7.83x
 NEON SIMDE                |       4687.68 |       2007.62 |     1.74x
 LIBPOPCNT                 |       1029.76 |        364.34 |     7.94x
 ```
+
+## AMD EPYC 7352
+This is an AVX2 platform without hardware level VPOPCNTDQ.
+
+Benchmarks for GCC, CLANG
+
+```bash
+make -s clean && make CC=gcc >/dev/null 2>&1 && ./popcount_bench 16384 20 10000
+Generating data...
+Verifying correctness of vectorized methods...
+Verification passed. All methods yield the same result.
+
+Running benchmarks...
+
+Method                    |     Mean (ns) |   StdDev (ns) |  Speedup
+--------------------------+---------------+---------------+----------
+Scalar (Guarded)          |      10460.76 |        477.72 |     1.00x
+Scalar (Compiler -O3)     |      10458.47 |        406.47 |     1.00x
+AVX1 128-bit SIMDE        |       4419.78 |        758.97 |     2.37x
+AVX2                      |       2344.06 |        138.98 |     4.46x
+AVX-512 (No Tern)         |       5554.61 |        289.16 |     1.88x
+AVX-512 (Ternary)         |      23811.50 |        764.52 |     0.44x
+AVX-512 (VPOPCNTDQ)       |      20247.34 |        666.75 |     0.52x
+NEON SIMDE                |       4532.37 |        337.50 |     2.31x
+LIBPOPCNT                 |       2279.09 |        174.32 |     4.59x
+```
+
+
+```bash
+make -s clean && make CC=clang >/dev/null 2>&1 && ./popcount_bench 16384 20 10000
+Generating data...
+Verifying correctness of vectorized methods...
+Verification passed. All methods yield the same result.
+
+Running benchmarks...
+
+Method                    |     Mean (ns) |   StdDev (ns) |  Speedup
+--------------------------+---------------+---------------+----------
+Scalar (Guarded)          |      11049.64 |        732.84 |     1.00x
+Scalar (Compiler -O3)     |       3262.96 |        315.29 |     3.39x
+AVX1 128-bit SIMDE        |       4359.10 |        464.75 |     2.53x
+AVX2                      |       2618.49 |        235.89 |     4.22x
+AVX-512 (No Tern)         |       2504.62 |        273.52 |     4.41x
+AVX-512 (Ternary)         |      11051.51 |       1117.51 |     1.00x
+AVX-512 (VPOPCNTDQ)       |       3293.40 |        300.84 |     3.36x
+NEON SIMDE                |       4332.65 |        489.83 |     2.55x
+LIBPOPCNT                 |       2370.21 |        213.08 |     4.66x
+```
 ## i3-12100t
 
 This is an AVX2 platform without hardware level VPOPCNTDQ.
