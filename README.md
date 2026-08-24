@@ -141,8 +141,6 @@ NEON SIMDE                |       3991.52 |       1212.43 |     2.39x
 LIBPOPCNT                 |       2291.73 |        829.93 |     4.17x
 ```
 
-
-
 ### i7-11700
 
 This is an AVX512 platform with hardware level VPOPCNTDQ.
@@ -212,6 +210,71 @@ AVX-512 (Ternary)         |        620.76 |        136.97 |    10.82x
 AVX-512 (VPOPCNTDQ)       |        574.94 |         24.58 |    11.68x
 NEON SIMDE                |       3055.23 |        320.84 |     2.20x
 LIBPOPCNT                 |        609.95 |        224.37 |    11.01x
+```
+
+Now with FLTO
+
+```bash
+make -s clean && make OPT_LEVEL=-O3 FLTO=-flto CC=gcc >/dev/null 2>&1 && ./popcount_bench 16384 20 10000
+Generating data...
+Verifying correctness of vectorized methods...
+Verification passed. All methods yield the same result.
+
+Running benchmarks...
+
+Method                    |     Mean (ns) |   StdDev (ns) |  Speedup
+--------------------------+---------------+---------------+----------
+Scalar (Guarded)          |       6306.10 |       1447.73 |     1.00x
+Scalar (Compiler -O3)     |       1997.94 |        788.97 |     3.16x
+AVX1 128-bit SIMDE        |       2944.08 |        936.17 |     2.14x
+AVX2                      |       1655.29 |        730.08 |     3.81x
+AVX-512 (No Tern)         |       1158.16 |        468.16 |     5.44x
+AVX-512 (Ternary)         |        845.97 |        496.05 |     7.45x
+AVX-512 (VPOPCNTDQ)       |        761.11 |        445.98 |     8.29x
+NEON SIMDE                |       2966.64 |       1033.45 |     2.13x
+LIBPOPCNT                 |        583.41 |        158.97 |    10.81x
+```
+
+```bash
+make -s clean && make OPT_LEVEL=-O3 FLTO=-flto CC=clang >/dev/null 2>&1 && ./popcount_bench 16384 20 10000
+Generating data...
+Verifying correctness of vectorized methods...
+Verification passed. All methods yield the same result.
+
+Running benchmarks...
+
+Method                    |     Mean (ns) |   StdDev (ns) |  Speedup
+--------------------------+---------------+---------------+----------
+Scalar (Guarded)          |       5782.47 |       1809.53 |     1.00x
+Scalar (Compiler -O3)     |        908.25 |        410.31 |     6.37x
+AVX1 128-bit SIMDE        |       3187.21 |       1236.51 |     1.81x
+AVX2                      |       1687.92 |        836.40 |     3.43x
+AVX-512 (No Tern)         |       1128.32 |        680.06 |     5.12x
+AVX-512 (Ternary)         |        650.15 |        388.93 |     8.89x
+AVX-512 (VPOPCNTDQ)       |        604.74 |        452.66 |     9.56x
+NEON SIMDE                |       3173.35 |       1071.33 |     1.82x
+LIBPOPCNT                 |        614.88 |        605.50 |     9.40x
+```
+
+```bash
+make -s clean && make OPT_LEVEL=-O3 FLTO=-flto CC=icx >/dev/null 2>&1 && ./popcount_bench 16384 20 10000
+Generating data...
+Verifying correctness of vectorized methods...
+Verification passed. All methods yield the same result.
+
+Running benchmarks...
+
+Method                    |     Mean (ns) |   StdDev (ns) |  Speedup
+--------------------------+---------------+---------------+----------
+Scalar (Guarded)          |       6973.66 |       1312.64 |     1.00x
+Scalar (Compiler -O3)     |        765.60 |        351.99 |     9.11x
+AVX1 128-bit SIMDE        |       3198.68 |        988.10 |     2.18x
+AVX2                      |       1576.39 |        647.70 |     4.42x
+AVX-512 (No Tern)         |       1127.25 |        561.85 |     6.19x
+AVX-512 (Ternary)         |        652.94 |        389.54 |    10.68x
+AVX-512 (VPOPCNTDQ)       |        605.82 |        371.18 |    11.51x
+NEON SIMDE                |       3183.65 |        896.08 |     2.19x
+LIBPOPCNT                 |        663.06 |        585.55 |    10.52x
 ```
 
 ### Intel Xeon 6517P
@@ -582,11 +645,6 @@ This is an AVX512 platform, without the VPOPCNTDQ 512 bit popcount instruction
 
 Benchmarks for GCC, CLANG, ICX
 
-
-This is an AVX512 platform, without the VPOPCNTDQ 512 bit popcount instruction
-
-Benchmarks for GCC, CLANG, ICX
-
 ```bash
 make -s clean && make OPT_LEVEL=-O0  CC=gcc >/dev/null 2>&1 && ./popcount_bench 16384 20 10000
 Generating data...
@@ -650,4 +708,73 @@ AVX-512 (Ternary)         |      13011.49 |       2109.92 |     2.71x
 AVX-512 (VPOPCNTDQ)       |     212097.22 |      17168.22 |     0.17x
 NEON SIMDE                |     814135.89 |      48116.49 |     0.04x
 LIBPOPCNT                 |      63103.16 |      10580.17 |     0.56x
+```
+
+### i7-11700 (-O0)
+
+This is an AVX512 platform, sith the VPOPCNTDQ 512 bit popcount instruction
+
+Benchmarks for GCC, CLANG, ICX
+
+```bash
+make -s clean && make OPT_LEVEL=-O0 CC=gcc >/dev/null 2>&1 && ./popcount_bench 16384 20 10000
+Generating data...
+Verifying correctness of vectorized methods...
+Verification passed. All methods yield the same result.
+
+Running benchmarks...
+
+Method                    |     Mean (ns) |   StdDev (ns) |  Speedup
+--------------------------+---------------+---------------+----------
+Scalar (Guarded)          |      20645.25 |       2026.57 |     1.00x
+Scalar (Compiler -O0)     |      22930.86 |       2930.88 |     0.90x
+AVX1 128-bit SIMDE        |      81516.34 |       6041.48 |     0.25x
+AVX2                      |      43930.13 |       3105.25 |     0.47x
+AVX-512 (No Tern)         |      23926.97 |       8791.50 |     0.86x
+AVX-512 (Ternary)         |      10283.28 |       1659.50 |     2.01x
+AVX-512 (VPOPCNTDQ)       |       9189.48 |       1450.32 |     2.25x
+NEON SIMDE                |     560131.36 |      22798.07 |     0.04x
+LIBPOPCNT                 |       6162.60 |       1064.50 |     3.35x
+```
+
+```bash
+make -s clean && make OPT_LEVEL=-O0 CC=clang >/dev/null 2>&1 && ./popcount_bench 16384 20 10000
+Generating data...
+Verifying correctness of vectorized methods...
+Verification passed. All methods yield the same result.
+
+Running benchmarks...
+
+Method                    |     Mean (ns) |   StdDev (ns) |  Speedup
+--------------------------+---------------+---------------+----------
+Scalar (Guarded)          |      15327.19 |       2728.74 |     1.00x
+Scalar (Compiler -O0)     |      15135.48 |       3973.16 |     1.01x
+AVX1 128-bit SIMDE        |      75934.44 |       5947.60 |     0.20x
+AVX2                      |      41133.25 |       3085.15 |     0.37x
+AVX-512 (No Tern)         |      24097.16 |       2273.31 |     0.64x
+AVX-512 (Ternary)         |       9046.02 |       1272.63 |     1.69x
+AVX-512 (VPOPCNTDQ)       |       9034.51 |       1073.17 |     1.70x
+NEON SIMDE                |     711015.41 |      23378.60 |     0.02x
+LIBPOPCNT                 |      10257.86 |       1089.02 |     1.49x
+```
+
+```bash
+make -s clean && make OPT_LEVEL=-O0 CC=icx >/dev/null 2>&1 && ./popcount_bench 16384 20 10000
+Generating data...
+Verifying correctness of vectorized methods...
+Verification passed. All methods yield the same result.
+
+Running benchmarks...
+
+Method                    |     Mean (ns) |   StdDev (ns) |  Speedup
+--------------------------+---------------+---------------+----------
+Scalar (Guarded)          |      15471.13 |       3107.75 |     1.00x
+Scalar (Compiler -O0)     |      14724.62 |       4022.06 |     1.05x
+AVX1 128-bit SIMDE        |      75562.66 |       5663.81 |     0.20x
+AVX2                      |      41524.22 |       3506.27 |     0.37x
+AVX-512 (No Tern)         |      24654.79 |       2189.96 |     0.63x
+AVX-512 (Ternary)         |      10068.03 |       1177.52 |     1.54x
+AVX-512 (VPOPCNTDQ)       |       9057.23 |       1140.12 |     1.71x
+NEON SIMDE                |     711561.23 |      37631.36 |     0.02x
+LIBPOPCNT                 |      10269.37 |       1167.24 |     1.51x
 ```
