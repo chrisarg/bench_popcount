@@ -257,12 +257,15 @@ int main(int argc, char **argv) {
     scalar_sum += times_scalar_guarded[i];
   double scalar_mean = scalar_sum / N;
 
+  char scalar_optimized_label[40];
+  snprintf(scalar_optimized_label, sizeof(scalar_optimized_label), "Scalar (Compiler %s)", OPT_STRING);
+
   printf("\n");
   printf(format_string2, "Method", "Mean (ns)", "StdDev (ns)", "Speedup");
   printf("--------------------------+---------------+---------------+----------"
          "\n");
   print_stats("Scalar (Guarded)", times_scalar_guarded, N, scalar_mean);
-  print_stats("Scalar (Compiler -O3)", times_scalar, N, scalar_mean);
+  print_stats(scalar_optimized_label, times_scalar, N, scalar_mean);
   print_stats("AVX1 128-bit SIMDE", times_avx1_128_simde, N, scalar_mean);
   print_stats("AVX2", times_avx2, N, scalar_mean);
   print_stats("AVX-512 (No Tern)", times_avx512_notern, N, scalar_mean);
