@@ -4,7 +4,7 @@ Compile with clang as: clang -O3 -march=native popcount_bench.c -o popcount_benc
 
 ## Benchmarks under high level optimizations
 
-We will test guarded and non guarded scalar versions of the code, AVX2 Harley Searle based on AVX2, AVX512 (2 varieties, one involving the _mm512_ternarylogic_epi64 _ternary_ logic, another that does not use said logic), AVX-512 population counts and the implementation in the library libpopcnt. The library SIMDe (SIMD everywhere) is used to emulate all vectorized instructions, even in processors that do not use them.
+We will test guarded and non guarded scalar versions of the code, AVX2 Harley Searle based on AVX2, AVX512 (2 varieties, one involving the _mm512_ternarylogic_epi64 _ternary_ logic, another that does not use said logic), AVX-512 population counts and the implementation in the library libpopcnt. The library SIMDe (SIMD everywhere) is used to emulate all vectorized instructions, even in processors that do not use them. The default pathway is to use -O3 without link time optimization (LTO). Passing the flag FLTO=-flto switches LTO
 
 ### i9-7900x
 
@@ -55,7 +55,6 @@ NEON SIMDE                |       4148.27 |        935.82 |     6.89x
 LIBPOPCNT                 |       2266.74 |        866.08 |    12.61x
 ```
 
-
 ```bash
 make -s clean && make CC=icx >/dev/null 2>&1 && ./popcount_bench 16384 20 10000
 Generating data...
@@ -76,6 +75,73 @@ AVX-512 (VPOPCNTDQ)       |       2169.98 |        875.06 |     4.30x
 NEON SIMDE                |       3930.46 |       1042.07 |     2.37x
 LIBPOPCNT                 |       2263.82 |        744.64 |     4.12x
 ```
+
+Now with LTO
+
+```bash
+make -s clean && make OPT_LEVEL=-O3 FLTO=-flto CC=gcc >/dev/null 2>&1 && ./popcount_bench 16384 20 10000
+Generating data...
+Verifying correctness of vectorized methods...
+Verification passed. All methods yield the same result.
+
+Running benchmarks...
+
+Method                    |     Mean (ns) |   StdDev (ns) |  Speedup
+--------------------------+---------------+---------------+----------
+Scalar (Guarded)          |       6674.49 |       1701.81 |     1.00x
+Scalar (Compiler -O3)     |       6746.97 |       1772.45 |     0.99x
+AVX1 128-bit SIMDE        |       3750.31 |       1174.58 |     1.78x
+AVX2                      |       2161.43 |        851.52 |     3.09x
+AVX-512 (No Tern)         |       1532.43 |        893.64 |     4.36x
+AVX-512 (Ternary)         |       1264.94 |        795.41 |     5.28x
+AVX-512 (VPOPCNTDQ)       |       2344.36 |        985.98 |     2.85x
+NEON SIMDE                |       3645.48 |       1219.69 |     1.83x
+LIBPOPCNT                 |       2055.32 |        900.02 |     3.25x
+```
+
+```bash
+make -s clean && make OPT_LEVEL=-O3 FLTO=-flto CC=clang >/dev/null 2>&1 && ./popcount_bench 16384 20 10000
+Generating data...
+Verifying correctness of vectorized methods...
+Verification passed. All methods yield the same result.
+
+Running benchmarks...
+
+Method                    |     Mean (ns) |   StdDev (ns) |  Speedup
+--------------------------+---------------+---------------+----------
+Scalar (Guarded)          |      29896.87 |       7554.54 |     1.00x
+Scalar (Compiler -O3)     |       3846.22 |       1582.02 |     7.77x
+AVX1 128-bit SIMDE        |       4306.54 |       1883.55 |     6.94x
+AVX2                      |       2555.05 |       1239.44 |    11.70x
+AVX-512 (No Tern)         |       1589.89 |       1156.57 |    18.80x
+AVX-512 (Ternary)         |       1094.02 |        735.21 |    27.33x
+AVX-512 (VPOPCNTDQ)       |       2302.73 |       1205.44 |    12.98x
+NEON SIMDE                |       4437.92 |       1746.77 |     6.74x
+LIBPOPCNT                 |       2430.29 |       1131.64 |    12.30x
+```
+
+```bash
+make -s clean && make OPT_LEVEL=-O3 FLTO=-flto CC=icx >/dev/null 2>&1 && ./popcount_bench 16384 20 10000
+Generating data...
+Verifying correctness of vectorized methods...
+Verification passed. All methods yield the same result.
+
+Running benchmarks...
+
+Method                    |     Mean (ns) |   StdDev (ns) |  Speedup
+--------------------------+---------------+---------------+----------
+Scalar (Guarded)          |       9545.11 |       2066.33 |     1.00x
+Scalar (Compiler -O3)     |       2323.31 |        949.00 |     4.11x
+AVX1 128-bit SIMDE        |       4106.36 |       1146.50 |     2.32x
+AVX2                      |       2410.16 |        801.68 |     3.96x
+AVX-512 (No Tern)         |       1496.87 |        740.37 |     6.38x
+AVX-512 (Ternary)         |       1028.37 |        497.40 |     9.28x
+AVX-512 (VPOPCNTDQ)       |       2213.37 |        903.78 |     4.31x
+NEON SIMDE                |       3991.52 |       1212.43 |     2.39x
+LIBPOPCNT                 |       2291.73 |        829.93 |     4.17x
+```
+
+
 
 ### i7-11700
 
@@ -508,7 +574,7 @@ LIBPOPCNT                 |      34644.75 |       4234.52 |     4.08x
 
 ## Benchmarks that turn off optimization for all code paths
 
-We will test guarded and non guarded scalar versions of the code, AVX2 Harley Searle based on AVX2, AVX512 (2 varieties, one involving the _mm512_ternarylogic_epi64 _ternary_ logic, another that does not use said logic), AVX-512 population counts and the implementation in the library libpopcnt. The library SIMDe (SIMD everywhere) is used to emulate all vectorized instructions, even in processors that do not use them. We will explicitly turn off optimization at the translation unit level by using a separate makefile that compiles as -O0 but with native code support
+We will test guarded and non guarded scalar versions of the code, AVX2 Harley Searle based on AVX2, AVX512 (2 varieties, one involving the _mm512_ternarylogic_epi64 _ternary_ logic, another that does not use said logic), AVX-512 population counts and the implementation in the library libpopcnt. The library SIMDe (SIMD everywhere) is used to emulate all vectorized instructions, even in processors that do not use them. We will explicitly turn off optimization at the translation unit level by turning off optimization using the OPT_LABEL flag
 
 ### i9-7900x (-O0)
 

@@ -3,14 +3,16 @@ CC ?= gcc
 TARGET = popcount_bench
 
 # Optimization level for the compiler
-OPT_LEVEL ?= -O3
+OPT_LEVEL ?= -O3  # default
+
+FLTO ?= 
 
 # Paths to your header-only libraries (adjust if they are in subdirectories)
 SIMDE_INCLUDE_DIR = .
 LIBPOPCNT_INCLUDE_DIR = .
 
 # Base compilation flags for all files
-CFLAGS = $(OPT_LEVEL) -march=native -Wall -I$(SIMDE_INCLUDE_DIR) -I$(LIBPOPCNT_INCLUDE_DIR)
+CFLAGS = $(OPT_LEVEL) $(FLTO) -march=native -Wall -I$(SIMDE_INCLUDE_DIR) -I$(LIBPOPCNT_INCLUDE_DIR)
 
 # Specialized flags specifically for the math kernels to prevent layout shifts
 KERNEL_CFLAGS = $(CFLAGS) -falign-functions=32 
@@ -24,7 +26,7 @@ all: $(TARGET)
 
 # Linking phase
 $(TARGET): $(OBJS)
-	$(CC) $(OBJS) -o $(TARGET) -lm
+	$(CC) $(OBJS) $(FLTO) -o $(TARGET) -lm
 
 # Compile the main driver (standard optimizations)
 popcount_bench.o: popcount_bench.c popcount_kernels.h
